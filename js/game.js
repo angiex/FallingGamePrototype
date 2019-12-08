@@ -9,10 +9,10 @@ var isRunning = false;
 var lastTimestamp = 0;
 var basket = null;
 
-var smallDevice = window.innerWidth < 600;
+var smallDevice = window.innerWidth < 1200;
 
-const DEFAULT_BASKET_WIDTH = smallDevice ? 70 : (window.innerWidth / 10);
-const DEFAULT_BASKET_HEIGHT = smallDevice ? 40 : (DEFAULT_BASKET_WIDTH * 0.5);
+const DEFAULT_BASKET_WIDTH = smallDevice ? 200 : (window.innerWidth / 10);
+const DEFAULT_BASKET_HEIGHT = smallDevice ? 130 : (DEFAULT_BASKET_WIDTH * 0.5);
 const COIN_RADIUS = DEFAULT_BASKET_HEIGHT * 0.4;
 const BOMB_RADIUS = DEFAULT_BASKET_HEIGHT * 0.4;
 const BASKET_HEIGHT_POSITION = canvas.height - DEFAULT_BASKET_HEIGHT; // position basket on the ground
