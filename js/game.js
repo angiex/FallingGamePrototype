@@ -16,7 +16,7 @@ const DEFAULT_BASKET_HEIGHT = smallDevice ? 40 : (DEFAULT_BASKET_WIDTH * 0.5);
 const COIN_RADIUS = DEFAULT_BASKET_HEIGHT * 0.4;
 const BOMB_RADIUS = DEFAULT_BASKET_HEIGHT * 0.4;
 const BASKET_HEIGHT_POSITION = canvas.height - DEFAULT_BASKET_HEIGHT; // position basket on the ground
-const GEN_SPEED = 1000; // in ms (here: generate 1 falling object per sec)
+const GEN_SPEED = 1000; // in ms; generate 1 falling object per sec)
 const BOMB_PROBABILITY = 0.2; // 1/5 falling ojects is a bomb
 const FRAME_RATE = 60;
 const FRAME_DURATION = 1000 / FRAME_RATE;
@@ -27,13 +27,13 @@ playButton.addEventListener("click", () => {
     playGame();
 });
 
-window.addEventListener("deviceorientation", handleOrientation, true);
+window.addEventListener("deviceorientation", handleOrientation);
 
-function handleOrientation(event) {
+var handleOrientation = function(event) {
     if (!isRunning) {
         return;
     }
-    let leftRightMov = event.gamma;
+    let leftRightMov = event.gamma; // [-90; 90]
     basket.move(leftRightMov);
 };
 
@@ -50,7 +50,7 @@ var Coin = class Coin {
 };
 
 Coin.prototype.draw = function() {
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "orange";
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
     ctx.stroke();
@@ -99,6 +99,12 @@ Basket.prototype.draw = function() {
 };
 
 Basket.prototype.move = function(leftRightMov) {
+    // don't let the basket move outside the canvas
+    if (this.x + leftRightMov < 0) {
+        this.x = 0
+    } else if (this.x + leftRightMov > canvas.width - DEFAULT_BASKET_WIDTH) {
+        this.x = canvas.width - DEFAULT_BASKET_WIDTH;
+    }
     this.x += leftRightMov;
 }
 
