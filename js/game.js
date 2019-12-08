@@ -29,7 +29,7 @@ playButton.addEventListener("click", () => {
 
 window.addEventListener("deviceorientation", handleOrientation);
 
-var handleOrientation = function(event) {
+function handleOrientation(event) {
     if (!isRunning) {
         return;
     }
