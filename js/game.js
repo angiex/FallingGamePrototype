@@ -27,7 +27,7 @@ playButton.addEventListener("click", () => {
     playGame();
 });
 
-window.addEventListener("deviceorientation", handleOrientation);
+window.addEventListener("deviceorientation", handleOrientation, true);
 
 function handleOrientation(event) {
     if (!isRunning) {
