@@ -119,10 +119,10 @@ var startGenerating = () => {
         let rollForObject = Math.random();
         let object;
         if (rollForObject < BOMB_PROBABILITY) {
-            xPos = BOMB_RADIUS + Math.random() * (canvas.width + BOMB_RADIUS);
+            xPos = BOMB_RADIUS + Math.random() * (canvas.width - BOMB_RADIUS);
             object = new Bomb(xPos, 0, BOMB_RADIUS, 1);
         } else {
-            xPos = COIN_RADIUS + Math.random() * (canvas.width + COIN_RADIUS);
+            xPos = COIN_RADIUS + Math.random() * (canvas.width - COIN_RADIUS);
             object = new Coin(xPos, 0, COIN_RADIUS, 1);
         }
         fallers.push(object);
