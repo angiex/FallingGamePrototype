@@ -27,6 +27,16 @@ playButton.addEventListener("click", () => {
     playGame();
 });
 
+window.addEventListener("deviceorientation", handleOrientation, true);
+
+function handleOrientation(event) {
+    if (!isRunning) {
+        return;
+    }
+    let leftRightMov = event.gamma;
+    basket.move(leftRightMov);
+};
+
 /************************************ OBJECTS ***********************************************/
 
 // Coins: Catch coins to get points
@@ -88,8 +98,8 @@ Basket.prototype.draw = function() {
     ctx.fillRect(this.x, this.y, this.width, this.height);
 };
 
-Basket.prototype.move = function() {
-    // TODO: use Gyroscope to move the basket
+Basket.prototype.move = function(leftRightMov) {
+    this.x += leftRightMov;
 }
 
 /************************************ GENERATOR *********************************************/
