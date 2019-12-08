@@ -99,7 +99,13 @@ Basket.prototype.draw = function() {
 };
 
 Basket.prototype.move = function(leftRightMov) {
-    // don't let the basket move outside the canvas
+    if (this.x + leftRightMov < 0) {
+        this.x = 0;
+        return;
+    } else if (this.x + leftRightMov > canvas.width - DEFAULT_BASKET_WIDTH) {
+        this.x = canvas.width - DEFAULT_BASKET_WIDTH;
+        return;
+    }
     this.x += leftRightMov;
 }
 
