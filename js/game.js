@@ -2,13 +2,14 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var playButton = document.getElementById("play");
 
-canvas.setAttribute("width", document.body.clientWidth);
-canvas.setAttribute("height", window.innerHeight);
+canvas.width = document.body.clientWidth;
+canvas.height = window.innerHeight;
 
 var isRunning = false;
 var lastTimestamp = 0;
 var basket = null;
 var score = 0;
+var lives = 3;
 
 var smallDevice = document.body.clientWidth < 1200;
 
@@ -17,14 +18,14 @@ const DEFAULT_BASKET_HEIGHT = smallDevice ? 130 : (DEFAULT_BASKET_WIDTH * 0.5);
 const COIN_RADIUS = DEFAULT_BASKET_HEIGHT * 0.4;
 const BOMB_RADIUS = DEFAULT_BASKET_HEIGHT * 0.4;
 const BASKET_HEIGHT_POSITION = canvas.height - DEFAULT_BASKET_HEIGHT; // position basket on the ground
-const GEN_SPEED = 1000; // in ms; generate 1 falling object per sec)
+const GEN_SPEED = 600; // in ms
 const BOMB_PROBABILITY = 0.2; // 1/5 falling ojects is a bomb
 const FRAME_RATE = 60;
 const FRAME_DURATION = 1000 / FRAME_RATE;
 
 /************************************ EVENTLISTENER *****************************************/
 playButton.addEventListener("click", () => {
-    // testDraw();
+    // playButton.style.visibility = "hidden";
     playGame();
 });
 
@@ -157,16 +158,6 @@ var stopGenerating = () => clearInterval(generate);
 
 /************************************ GAME LOGIC ********************************************/
 
-function testDraw() {
-    // testing
-    let coin = new Coin(100, 100, COIN_RADIUS);
-    let bomb = new Bomb(100, 200, BOMB_RADIUS);
-    let basket = new Basket(100, BASKET_HEIGHT_POSITION, DEFAULT_BASKET_WIDTH, DEFAULT_BASKET_HEIGHT);
-    bomb.draw();
-    coin.draw();
-    basket.draw();
-};
-
 function basketCaughtObject(object) {
     let xCoordMatches = (object.x - object.radius >= basket.x) && (object.x + object.radius <= basket.x + DEFAULT_BASKET_WIDTH);
     let yCoordMatches = object.y >= basket.y;
@@ -175,7 +166,7 @@ function basketCaughtObject(object) {
         if(object instanceof Coin) {
             score++;
         } else {
-            score--;;
+            lives--;
         }
     }
     return caught;
@@ -187,6 +178,30 @@ function drawScoreCount() {
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
     ctx.fillText("Score: " + score, Math.floor(canvas.width / 2), Math.floor(canvas.height*0.1));
+}
+
+function drawLifeCount() {
+    ctx.fillStyle = "red";
+    ctx.font = "30px Helvetica";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText(lives, Math.floor(canvas.width * 0.8), Math.floor(canvas.height*0.1));
+}
+
+function gameOver() {
+    stopGenerating();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    isRunning = false;
+
+    ctx.fillStyle = "white";
+    ctx.font = "30px Helvetica";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText(
+        "Game Over - Total score:" + score,
+        Math.floor(canvas.width / 2),
+        Math.floor(canvas.height / 2)
+    );
 }
 
 function drawObjects(msElapsed) {
@@ -207,6 +222,7 @@ function drawObjects(msElapsed) {
     });
 
     drawScoreCount();
+    drawLifeCount();
 };
 
 var nextFrame = function(timestamp) {
@@ -223,8 +239,12 @@ var nextFrame = function(timestamp) {
     }
 
     drawObjects(timestamp - lastTimestamp);
-
     lastTimestamp = timestamp;
+
+    if(lives <= 0) {
+        gameOver();
+    }
+
     if (isRunning) {
         window.requestAnimationFrame(nextFrame);
     }
