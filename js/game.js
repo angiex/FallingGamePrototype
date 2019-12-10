@@ -88,7 +88,7 @@ var moveBasketWithMouse = (event) => {
     }
     if(event.clientX - (basketWidth / 2) < 0) {
         basket.x = 0;
-    } else if (event.clientX > canvas.width - basketWidth) {
+    } else if (event.clientX + (basketWidth / 2) > canvas.width) {
         basket.x = canvas.width - basketWidth;
     } else {
         basket.x = event.clientX - (basketWidth / 2);
@@ -188,10 +188,10 @@ var startGenerating = () => {
         let rollForObject = Math.random();
         let object;
         if (rollForObject < BOMB_PROBABILITY) {
-            xPos = bombRadius + Math.random() * (canvas.width - bombRadius);
+            xPos = bombRadius + Math.random() * (canvas.width - 2 * bombRadius);
             object = new Bomb(xPos, 0, bombRadius, 1);
         } else {
-            xPos = coinRadius + Math.random() * (canvas.width - coinRadius);
+            xPos = coinRadius + Math.random() * (canvas.width - 2* coinRadius);
             object = new Coin(xPos, 0, coinRadius, 1);
         }
         fallers.push(object);
