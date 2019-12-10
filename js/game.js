@@ -169,7 +169,7 @@ function testDraw() {
 
 function basketCaughtObject(object) {
     let xCoordMatches = (object.x - object.radius >= basket.x) && (object.x + object.radius <= basket.x + DEFAULT_BASKET_WIDTH);
-    let yCoordMatches = object.y <= basket.y;
+    let yCoordMatches = object.y >= basket.y;
     let caught = xCoordMatches && yCoordMatches;
     if(caught) {
         if(object instanceof Coin) {
@@ -200,7 +200,10 @@ function drawObjects(msElapsed) {
     basket.draw();
 
     fallers = fallers.filter((object) => {
-        return !basketCaughtObject(object) || object.y < canvas.height;
+        return !basketCaughtObject(object);
+    });
+    fallers = fallers.filter((object) => {
+        return object.y < canvas.height;
     });
 
     drawScoreCount();
