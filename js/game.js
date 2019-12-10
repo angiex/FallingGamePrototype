@@ -11,7 +11,9 @@ var basket = null;
 var score = 0;
 var lives = 3;
 
-var basketWidth = (window.innerWidth <= 700) ? 200 : Math.floor(canvas.width / 8);
+var portraitMode = window.innerWidth < window.innerHeight;
+
+var basketWidth = portraitMode ? Math.floor(canvas.width / 5) : Math.floor(canvas.width / 8);
 var basketHeight = basketWidth * 0.5;
 var coinRadius = basketHeight * 0.4;
 var bombRadius = basketHeight * 0.4;
@@ -41,6 +43,7 @@ window.addEventListener("resize", () => {
     coinRadius = basketHeight * 0.4;
     bombRadius = basketHeight * 0.4;
     basketHeightPosition = canvas.height - basketHeight;
+    basket = new Basket(Math.floor((Basket.width + canvas.width) / 2), basketHeightPosition, basketWidth, basketHeight)
 })
 
 canvas.addEventListener("click", () => {
@@ -286,7 +289,7 @@ function playGame() {
     isRunning = true;
     lastTimestamp = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    basket = new Basket(100, basketHeightPosition, basketWidth, basketHeight);
+    basket = new Basket(Math.floor((Basket.width + canvas.width) / 2), basketHeightPosition, basketWidth, basketHeight);
     startGenerating();
     window.requestAnimationFrame(nextFrame);
 };
