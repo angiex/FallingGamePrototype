@@ -43,7 +43,7 @@ window.addEventListener("resize", () => {
     canvas.height = window.innerHeight;
 
     portraitMode = window.innerWidth < window.innerHeight;
-    basketWidth = portraitMode ? Math.floor(canvas.width / 5) : Math.floor(canvas.width / 8);
+    basketWidth = portraitMode ? Math.floor(canvas.width / 4.5) : Math.floor(canvas.width / 8);
     basketHeight = basketWidth * 0.5;
     coinRadius = basketHeight * 0.4;
     bombRadius = basketHeight * 0.4;
@@ -53,7 +53,7 @@ window.addEventListener("resize", () => {
         setUpStartScreen();
     } else if (isRunning) {
         basket = new Basket(
-            Math.floor((Basket.width + canvas.width) / 2),
+            Math.floor((basketWidth + canvas.width) / 2),
             basketHeightPosition,
             basketWidth,
             basketHeight
@@ -306,7 +306,12 @@ function playGame() {
     startScreen = false;
     lastTimestamp = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    basket = new Basket(Math.floor((Basket.width + canvas.width) / 2), basketHeightPosition, basketWidth, basketHeight);
+    basket = new Basket(
+        Math.floor((basketWidth + canvas.width) / 2),
+        basketHeightPosition,
+        basketWidth,
+        basketHeight
+    );
     startGenerating();
     window.requestAnimationFrame(nextFrame);
 };
