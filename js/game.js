@@ -2,16 +2,17 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var playButton = document.getElementById("play");
 
-canvas.setAttribute("width", window.innerWidth);
+canvas.setAttribute("width", document.body.clientWidth);
 canvas.setAttribute("height", window.innerHeight);
 
 var isRunning = false;
 var lastTimestamp = 0;
 var basket = null;
+var score = 0;
 
-var smallDevice = window.innerWidth < 1200;
+var smallDevice = document.body.clientWidth < 1200;
 
-const DEFAULT_BASKET_WIDTH = smallDevice ? 200 : (window.innerWidth / 10);
+const DEFAULT_BASKET_WIDTH = smallDevice ? 200 : (canvas.width / 10);
 const DEFAULT_BASKET_HEIGHT = smallDevice ? 130 : (DEFAULT_BASKET_WIDTH * 0.5);
 const COIN_RADIUS = DEFAULT_BASKET_HEIGHT * 0.4;
 const BOMB_RADIUS = DEFAULT_BASKET_HEIGHT * 0.4;
@@ -27,15 +28,38 @@ playButton.addEventListener("click", () => {
     playGame();
 });
 
-window.addEventListener("deviceorientation", handleOrientation, true);
+document.addEventListener("keydown", (event) => {
+    if (!isRunning) {
+        return;
+    }
+    let moveDistance = DEFAULT_BASKET_WIDTH / 2;
+    switch(event.keyCode) {
+        case 37:
+            basket.move(-moveDistance);
+            return;
+        case 39:
+            basket.move(moveDistance);
+            return;
+    }
+}, true);
 
-function handleOrientation(event) {
+var moveBasketWithMouse = (event) => {
+    if (!isRunning) {
+        return;
+    }
+    basket.x = event.clientX - (DEFAULT_BASKET_WIDTH / 2);
+};
+
+document.body.addEventListener("mouseenter", moveBasketWithMouse);
+document.body.addEventListener("mousemove", moveBasketWithMouse);
+
+window.addEventListener("deviceorientation", (event) => {
     if (!isRunning) {
         return;
     }
     let leftRightMov = event.gamma; // [-90; 90]
     basket.move(leftRightMov);
-};
+}, true);
 
 /************************************ OBJECTS ***********************************************/
 
@@ -50,7 +74,7 @@ var Coin = class Coin {
 };
 
 Coin.prototype.draw = function() {
-    ctx.fillStyle = "orange";
+    ctx.fillStyle = "#ffcc66";
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
     ctx.stroke();
@@ -72,7 +96,7 @@ var Bomb = class Bomb {
 };
 
 Bomb.prototype.draw = function() {
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "#ff4d4d";
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
     ctx.stroke();
@@ -94,7 +118,7 @@ var Basket = class Basket {
 };
 
 Basket.prototype.draw = function() {
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = "#80dfff";
     ctx.fillRect(this.x, this.y, this.width, this.height);
 };
 
@@ -143,6 +167,28 @@ function testDraw() {
     basket.draw();
 };
 
+function basketCaughtObject(object) {
+    let xCoordMatches = (object.x - object.radius >= basket.x) && (object.x + object.radius <= basket.x + DEFAULT_BASKET_WIDTH);
+    let yCoordMatches = object.y <= basket.y;
+    let caught = xCoordMatches && yCoordMatches;
+    if(caught) {
+        if(object instanceof Coin) {
+            score++;
+        } else {
+            score--;;
+        }
+    }
+    return caught;
+};
+
+function drawScoreCount() {
+    ctx.fillStyle = "white";
+    ctx.font = "30px Helvetica";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText("Score: " + score, Math.floor(canvas.width / 2), Math.floor(canvas.height*0.1));
+}
+
 function drawObjects(msElapsed) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -154,8 +200,10 @@ function drawObjects(msElapsed) {
     basket.draw();
 
     fallers = fallers.filter((object) => {
-        return object.y < canvas.height;
+        return !basketCaughtObject(object) || object.y < canvas.height;
     });
+
+    drawScoreCount();
 };
 
 var nextFrame = function(timestamp) {
