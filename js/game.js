@@ -42,9 +42,9 @@ window.addEventListener("resize", () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    smallDevice = window.innerWidth < 1200;
-    basketWidth = smallDevice ? 200 : (canvas.width / 10);
-    basketHeight = smallDevice ? 130 : (basketWidth * 0.5);
+    portraitMode = window.innerWidth < window.innerHeight;
+    basketWidth = portraitMode ? Math.floor(canvas.width / 5) : Math.floor(canvas.width / 8);
+    basketHeight = basketWidth * 0.5;
     coinRadius = basketHeight * 0.4;
     bombRadius = basketHeight * 0.4;
     basketHeightPosition = canvas.height - basketHeight;
