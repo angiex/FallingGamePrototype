@@ -2,7 +2,7 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var playButton = document.getElementById("play");
 
-canvas.width = document.body.clientWidth;
+canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 var isRunning = false;
@@ -11,29 +11,49 @@ var basket = null;
 var score = 0;
 var lives = 3;
 
-var smallDevice = document.body.clientWidth < 1200;
-
-const DEFAULT_BASKET_WIDTH = smallDevice ? 200 : (canvas.width / 10);
-const DEFAULT_BASKET_HEIGHT = smallDevice ? 130 : (DEFAULT_BASKET_WIDTH * 0.5);
-const COIN_RADIUS = DEFAULT_BASKET_HEIGHT * 0.4;
-const BOMB_RADIUS = DEFAULT_BASKET_HEIGHT * 0.4;
-const BASKET_HEIGHT_POSITION = canvas.height - DEFAULT_BASKET_HEIGHT; // position basket on the ground
-const GEN_SPEED = 600; // in ms
+var basketWidth = (window.innerWidth <= 700) ? 200 : Math.floor(canvas.width / 8);
+var basketHeight = basketWidth * 0.5;
+var coinRadius = basketHeight * 0.4;
+var bombRadius = basketHeight * 0.4;
+var basketHeightPosition = canvas.height - basketHeight; // position basket on the ground
+const GEN_SPEED = 800; // in ms
 const BOMB_PROBABILITY = 0.2; // 1/5 falling ojects is a bomb
 const FRAME_RATE = 60;
 const FRAME_DURATION = 1000 / FRAME_RATE;
 
+/************************************ USER MESSAGES *****************************************/
+
+ctx.fillStyle = "white";
+ctx.font = "30px Helvetica";
+ctx.textAlign = "center";
+ctx.textBaseline = "top";
+ctx.fillText("Tap to start", Math.floor(canvas.width / 2), Math.floor(canvas.height / 2));
+
 /************************************ EVENTLISTENER *****************************************/
-playButton.addEventListener("click", () => {
-    // playButton.style.visibility = "hidden";
-    playGame();
+
+window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    smallDevice = window.innerWidth < 1200;
+    basketWidth = smallDevice ? 200 : (canvas.width / 10);
+    basketHeight = smallDevice ? 130 : (basketWidth * 0.5);
+    coinRadius = basketHeight * 0.4;
+    bombRadius = basketHeight * 0.4;
+    basketHeightPosition = canvas.height - basketHeight;
+})
+
+canvas.addEventListener("click", () => {
+    if(!isRunning) {
+        playGame();
+    }
 });
 
 document.addEventListener("keydown", (event) => {
     if (!isRunning) {
         return;
     }
-    let moveDistance = DEFAULT_BASKET_WIDTH / 2;
+    let moveDistance = basketWidth / 2;
     switch(event.keyCode) {
         case 37:
             basket.move(-moveDistance);
@@ -48,7 +68,13 @@ var moveBasketWithMouse = (event) => {
     if (!isRunning) {
         return;
     }
-    basket.x = event.clientX - (DEFAULT_BASKET_WIDTH / 2);
+    if(event.clientX - (basketWidth / 2) < 0) {
+        basket.x = 0;
+    } else if (event.clientX > canvas.width - basketWidth) {
+        basket.x = canvas.width - basketWidth;
+    } else {
+        basket.x = event.clientX - (basketWidth / 2);
+    }
 };
 
 document.body.addEventListener("mouseenter", moveBasketWithMouse);
@@ -127,8 +153,8 @@ Basket.prototype.move = function(leftRightMov) {
     if (this.x + leftRightMov < 0) {
         this.x = 0;
         return;
-    } else if (this.x + leftRightMov > canvas.width - DEFAULT_BASKET_WIDTH) {
-        this.x = canvas.width - DEFAULT_BASKET_WIDTH;
+    } else if (this.x + leftRightMov > canvas.width - basketWidth) {
+        this.x = canvas.width - basketWidth;
         return;
     }
     this.x += leftRightMov;
@@ -144,11 +170,11 @@ var startGenerating = () => {
         let rollForObject = Math.random();
         let object;
         if (rollForObject < BOMB_PROBABILITY) {
-            xPos = BOMB_RADIUS + Math.random() * (canvas.width - BOMB_RADIUS);
-            object = new Bomb(xPos, 0, BOMB_RADIUS, 1);
+            xPos = bombRadius + Math.random() * (canvas.width - bombRadius);
+            object = new Bomb(xPos, 0, bombRadius, 1);
         } else {
-            xPos = COIN_RADIUS + Math.random() * (canvas.width - COIN_RADIUS);
-            object = new Coin(xPos, 0, COIN_RADIUS, 1);
+            xPos = coinRadius + Math.random() * (canvas.width - coinRadius);
+            object = new Coin(xPos, 0, coinRadius, 1);
         }
         fallers.push(object);
     }, GEN_SPEED);
@@ -159,7 +185,7 @@ var stopGenerating = () => clearInterval(generate);
 /************************************ GAME LOGIC ********************************************/
 
 function basketCaughtObject(object) {
-    let xCoordMatches = (object.x - object.radius >= basket.x) && (object.x + object.radius <= basket.x + DEFAULT_BASKET_WIDTH);
+    let xCoordMatches = (object.x - object.radius >= basket.x) && (object.x + object.radius <= basket.x + basketWidth);
     let yCoordMatches = object.y >= basket.y;
     let caught = xCoordMatches && yCoordMatches;
     if(caught) {
@@ -192,15 +218,21 @@ function gameOver() {
     stopGenerating();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     isRunning = false;
+    fallers = [];
 
     ctx.fillStyle = "white";
     ctx.font = "30px Helvetica";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
     ctx.fillText(
-        "Game Over - Total score:" + score,
+        "Game Over - Total score: " + score,
         Math.floor(canvas.width / 2),
-        Math.floor(canvas.height / 2)
+        Math.floor(canvas.height * 0.4)
+    );
+    ctx.fillText(
+        "Try again? Tap to start.",
+        Math.floor(canvas.width / 2),
+        Math.floor(canvas.height * 0.6)
     );
 }
 
@@ -253,7 +285,8 @@ var nextFrame = function(timestamp) {
 function playGame() {
     isRunning = true;
     lastTimestamp = 0;
-    basket = new Basket(100, BASKET_HEIGHT_POSITION, DEFAULT_BASKET_WIDTH, DEFAULT_BASKET_HEIGHT);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    basket = new Basket(100, basketHeightPosition, basketWidth, basketHeight);
     startGenerating();
     window.requestAnimationFrame(nextFrame);
 };
