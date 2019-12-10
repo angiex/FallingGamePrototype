@@ -5,6 +5,7 @@ var playButton = document.getElementById("play");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+var startScreen = true;
 var isRunning = false;
 var lastTimestamp = 0;
 var basket = null;
@@ -25,11 +26,15 @@ const FRAME_DURATION = 1000 / FRAME_RATE;
 
 /************************************ USER MESSAGES *****************************************/
 
-ctx.fillStyle = "white";
-ctx.font = "30px Helvetica";
-ctx.textAlign = "center";
-ctx.textBaseline = "top";
-ctx.fillText("Tap to start", Math.floor(canvas.width / 2), Math.floor(canvas.height / 2));
+function setUpStartScreen() {
+    ctx.fillStyle = "white";
+    ctx.font = "30px Helvetica";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText("Tap to start", Math.floor(canvas.width / 2), Math.floor(canvas.height / 2));
+}
+
+setUpStartScreen();
 
 /************************************ EVENTLISTENER *****************************************/
 
@@ -43,7 +48,17 @@ window.addEventListener("resize", () => {
     coinRadius = basketHeight * 0.4;
     bombRadius = basketHeight * 0.4;
     basketHeightPosition = canvas.height - basketHeight;
-    basket = new Basket(Math.floor((Basket.width + canvas.width) / 2), basketHeightPosition, basketWidth, basketHeight)
+
+    if (startScreen) {
+        setUpStartScreen();
+    } else if (isRunning) {
+        basket = new Basket(
+            Math.floor((Basket.width + canvas.width) / 2),
+            basketHeightPosition,
+            basketWidth,
+            basketHeight
+        );
+    }
 })
 
 canvas.addEventListener("click", () => {
@@ -188,7 +203,8 @@ var stopGenerating = () => clearInterval(generate);
 /************************************ GAME LOGIC ********************************************/
 
 function basketCaughtObject(object) {
-    let xCoordMatches = (object.x - object.radius >= basket.x) && (object.x + object.radius <= basket.x + basketWidth);
+    let xCoordMatches = 
+    (object.x - object.radius >= basket.x) && (object.x + object.radius <= basket.x + basketWidth);
     let yCoordMatches = object.y >= basket.y;
     let caught = xCoordMatches && yCoordMatches;
     if(caught) {
@@ -287,6 +303,7 @@ var nextFrame = function(timestamp) {
 
 function playGame() {
     isRunning = true;
+    startScreen = false;
     lastTimestamp = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     basket = new Basket(Math.floor((Basket.width + canvas.width) / 2), basketHeightPosition, basketWidth, basketHeight);
