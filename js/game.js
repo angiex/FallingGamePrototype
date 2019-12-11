@@ -9,8 +9,8 @@ var startScreen = true;
 var isRunning = false;
 var lastTimestamp = 0;
 var basket = null;
-var score = 0;
-var lives = 3;
+var score;
+var lives;
 
 var portraitMode = window.innerWidth < window.innerHeight;
 
@@ -19,8 +19,8 @@ var basketHeight = basketWidth * 0.5;
 var coinRadius = basketHeight * 0.4;
 var bombRadius = basketHeight * 0.4;
 var basketHeightPosition = canvas.height - basketHeight; // position basket on the ground
-const GEN_SPEED = 800; // in ms
-const BOMB_PROBABILITY = 0.2; // 1/5 falling ojects is a bomb
+const GEN_SPEED = 600; // in ms
+const BOMB_PROBABILITY = 0.2;
 const FRAME_RATE = 60;
 const FRAME_DURATION = 1000 / FRAME_RATE;
 
@@ -61,7 +61,7 @@ window.addEventListener("resize", () => {
     }
 })
 
-canvas.addEventListener("click", () => {
+document.addEventListener("click", () => {
     if(!isRunning) {
         playGame();
     }
@@ -304,6 +304,8 @@ var nextFrame = function(timestamp) {
 function playGame() {
     isRunning = true;
     startScreen = false;
+    lives = 3;
+    score = 0;
     lastTimestamp = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     basket = new Basket(
