@@ -9,8 +9,8 @@ var startScreen = true;
 var isRunning = false;
 var lastTimestamp = 0;
 var basket = null;
-var score;
-var lives;
+var score = 0;
+var lives = 3;
 
 var portraitMode = window.innerWidth < window.innerHeight;
 
@@ -19,7 +19,7 @@ var basketHeight = basketWidth * 0.5;
 var coinRadius = basketHeight * 0.4;
 var bombRadius = basketHeight * 0.4;
 var basketHeightPosition = canvas.height - basketHeight; // position basket on the ground
-const GEN_SPEED = 600; // in ms
+const GEN_SPEED = 700; // in ms
 const BOMB_PROBABILITY = 0.2;
 const FRAME_RATE = 60;
 const FRAME_DURATION = 1000 / FRAME_RATE;
