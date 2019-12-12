@@ -61,7 +61,7 @@ window.addEventListener("resize", () => {
     }
 })
 
-document.addEventListener("click", () => {
+canvas.addEventListener("click", () => {
     if(!isRunning) {
         playGame();
     }
