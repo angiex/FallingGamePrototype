@@ -34,7 +34,7 @@ function setSettings() {
     
     portraitMode = window.innerWidth < window.innerHeight;
 
-    fontSize = portraitMode ? Math.floor(canvas.height / 15) : Math.floor(canvas.height / 12);
+    fontSize = portraitMode ? Math.floor(canvas.height / 18) : Math.floor(canvas.height / 14);
     basketWidth = portraitMode ? Math.floor(canvas.width / 4.5) : Math.floor(canvas.width / 9);
     basketHeight = basketWidth * 0.5;
     coinRadius = basketHeight * 0.4;
