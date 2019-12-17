@@ -7,50 +7,103 @@ canvas.height = window.innerHeight;
 
 var startScreen = true;
 var isRunning = false;
+var gameOverScreen = false;
 var lastTimestamp = 0;
 var basket = null;
 var score = 0;
 var lives = 3;
 
-var portraitMode = window.innerWidth < window.innerHeight;
-
-var basketWidth = portraitMode ? Math.floor(canvas.width / 5) : Math.floor(canvas.width / 8);
-var basketHeight = basketWidth * 0.5;
-var coinRadius = basketHeight * 0.4;
-var bombRadius = basketHeight * 0.4;
-var basketHeightPosition = canvas.height - basketHeight; // position basket on the ground
-const GEN_SPEED = 700; // in ms
-const BOMB_PROBABILITY = 0.2;
+const GEN_SPEED = 800; // in ms
+const BOMB_PROBABILITY = 0.4;
 const FRAME_RATE = 60;
 const FRAME_DURATION = 1000 / FRAME_RATE;
 
-/************************************ USER MESSAGES *****************************************/
+/************************************ SETTINGS **********************************************/
 
-function setUpStartScreen() {
+var portraitMode;
+var fontSize;
+var basketWidth;
+var basketHeight;
+var coinRadius;
+var bombRadius;
+var basketHeightPosition;
+
+function setSettings() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    portraitMode = window.innerWidth < window.innerHeight;
+
+    fontSize = portraitMode ? Math.floor(canvas.height / 15) : Math.floor(canvas.height / 12);
+    basketWidth = portraitMode ? Math.floor(canvas.width / 4.5) : Math.floor(canvas.width / 9);
+    basketHeight = basketWidth * 0.5;
+    coinRadius = basketHeight * 0.4;
+    bombRadius = basketHeight * 0.4;
+    basketHeightPosition = canvas.height - basketHeight; // position basket on the ground
+}
+
+// set settings when loading the page
+setSettings();
+
+/************************************ TEXT DISPLAYS *****************************************/
+
+function drawStartScreen() {
     ctx.fillStyle = "white";
-    ctx.font = "30px Helvetica";
+    ctx.font = (fontSize|0) + "px Helvetica";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
     ctx.fillText("Tap to start", Math.floor(canvas.width / 2), Math.floor(canvas.height / 2));
 }
 
-setUpStartScreen();
+function drawGameOverScreen() {
+    ctx.fillStyle = "blue";
+    ctx.font = (fontSize|0) + "px Helvetica";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText(
+        "Game Over!",
+        Math.floor(canvas.width / 2),
+        Math.floor(canvas.height * 0.4)
+    );
+    ctx.fillStyle = "white";
+    ctx.fillText(
+        "Total score: " + score,
+        Math.floor(canvas.width / 2),
+        Math.floor(canvas.height * 0.5)
+    );
+    ctx.fillText(
+        "Tap to retry.",
+        Math.floor(canvas.width / 2),
+        Math.floor(canvas.height * 0.6)
+    );
+}
+
+function drawScoreCount() {
+    ctx.fillStyle = "white";
+    ctx.font = (fontSize|0) + "px Helvetica";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText("Score: " + score, Math.floor(canvas.width / 2), Math.floor(canvas.height*0.1));
+}
+
+function drawLifeCount() {
+    ctx.fillStyle = "red";
+    ctx.font = (fontSize|0) + "px Helvetica";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText(lives, Math.floor(canvas.width * 0.8), Math.floor(canvas.height*0.1));
+}
+
+// draw start screen when loading the page
+drawStartScreen();
 
 /************************************ EVENTLISTENER *****************************************/
 
 window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    portraitMode = window.innerWidth < window.innerHeight;
-    basketWidth = portraitMode ? Math.floor(canvas.width / 4.5) : Math.floor(canvas.width / 8);
-    basketHeight = basketWidth * 0.5;
-    coinRadius = basketHeight * 0.4;
-    bombRadius = basketHeight * 0.4;
-    basketHeightPosition = canvas.height - basketHeight;
+    setSettings();
 
     if (startScreen) {
-        setUpStartScreen();
+        drawStartScreen();
     } else if (isRunning) {
         basket = new Basket(
             Math.floor((basketWidth + canvas.width) / 2),
@@ -58,6 +111,9 @@ window.addEventListener("resize", () => {
             basketWidth,
             basketHeight
         );
+        drawScoreCount();
+    } else if (gameOverScreen) {
+        drawGameOverScreen();
     }
 })
 
@@ -208,51 +264,19 @@ function basketCaughtObject(object) {
     let yCoordMatches = object.y >= basket.y;
     let caught = xCoordMatches && yCoordMatches;
     if(caught) {
-        if(object instanceof Coin) {
-            score++;
-        } else {
-            lives--;
-        }
+        object instanceof Coin ? score++ : lives--;
     }
     return caught;
 };
-
-function drawScoreCount() {
-    ctx.fillStyle = "white";
-    ctx.font = "30px Helvetica";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    ctx.fillText("Score: " + score, Math.floor(canvas.width / 2), Math.floor(canvas.height*0.1));
-}
-
-function drawLifeCount() {
-    ctx.fillStyle = "red";
-    ctx.font = "30px Helvetica";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    ctx.fillText(lives, Math.floor(canvas.width * 0.8), Math.floor(canvas.height*0.1));
-}
 
 function gameOver() {
     stopGenerating();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     isRunning = false;
+    gameOverScreen = true;
     fallers = [];
 
-    ctx.fillStyle = "white";
-    ctx.font = "30px Helvetica";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    ctx.fillText(
-        "Game Over - Total score: " + score,
-        Math.floor(canvas.width / 2),
-        Math.floor(canvas.height * 0.4)
-    );
-    ctx.fillText(
-        "Try again? Tap to start.",
-        Math.floor(canvas.width / 2),
-        Math.floor(canvas.height * 0.6)
-    );
+    drawGameOverScreen();
 }
 
 function drawObjects(msElapsed) {
@@ -304,6 +328,7 @@ var nextFrame = function(timestamp) {
 function playGame() {
     isRunning = true;
     startScreen = false;
+    gameOverScreen = false;
     lives = 3;
     score = 0;
     lastTimestamp = 0;
