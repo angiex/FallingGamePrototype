@@ -1,10 +1,52 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8" />
-        <title>Index</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Falling Game Prototype</title>
+        <script src="js/deviceOrientationDemo.js"></script>
     </head>
     <body>
-        <a href="game.html">Falling Game</a>
+        <h1>Falling Game Prototype</h1>
+        <p>
+            <h2>
+                What is this about?
+            </h2>
+            This is a prototype for a small game in JavaScript written for the lecture
+            "Mobile Computing & Internet of Things" at the Karlsruhe Institute for Technology
+            in winter 2019/20.
+            <br/>
+            <a href="game.html" id="game-link">Falling Game</a>
+        </p>
+        <p>
+            <h2>
+                Rules
+            </h2>
+            The goal is to catch as many falling coins as you can and to avoid the bombs.
+            You start off with 3 lives; each time the basket touches a bomb, you lose a life.
+            There is no time limit. It's game over when you have no more lives left.
+            <!-- Draw coin, bomb, basket and explain -->
+        </p>
+        <p>
+            <h2>
+                Controls
+            </h2>
+            You can control the basket...
+            <ul>
+                <li>using the left/right arrow keys.</li>
+                <li>by moving the mouse.</li>
+                <li>using the gyroscope and tilting your device.</li>
+            </ul>
+            Not every device has a gyroscope and not every browser supports it.
+            For example, this game is playable using the gyroscope in Chrome for iOS devices, but not
+            in Safari.
+            <br/>
+            To test whether the gyroscope is available on the browser and device you are currently
+            using, tilt your device to see if the script recognises the device orientation.
+
+            <div id="alpha"></div>
+            <div id="beta"></div>
+            <div id="gamma"></div>
+        </p>
     </body>
 </html>
