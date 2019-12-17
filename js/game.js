@@ -106,7 +106,7 @@ window.addEventListener("resize", () => {
         drawStartScreen();
     } else if (isRunning) {
         basket = new Basket(
-            Math.floor((basketWidth + canvas.width) / 2),
+            Math.floor((canvas.width - basket.width) / 2), // re-center basket on resize
             basketHeightPosition,
             basketWidth,
             basketHeight
@@ -263,7 +263,7 @@ function basketCaughtObject(object) {
     (object.x - object.radius >= basket.x) && (object.x + object.radius <= basket.x + basketWidth);
     let yCoordMatches = object.y >= basket.y;
     let caught = xCoordMatches && yCoordMatches;
-    if(caught) {
+    if (caught) {
         object instanceof Coin ? score++ : lives--;
     }
     return caught;
@@ -301,28 +301,18 @@ function drawObjects(msElapsed) {
 };
 
 var nextFrame = function(timestamp) {
-    if (!lastTimestamp) {
-        lastTimestamp = timestamp;
-    }
+    if (!lastTimestamp) lastTimestamp = timestamp;
     
     if (timestamp - lastTimestamp < FRAME_DURATION) {
-        if (isRunning) {
-            window.requestAnimationFrame(nextFrame);
-        }
-
+        if (isRunning) window.requestAnimationFrame(nextFrame);
         return;
     }
 
     drawObjects(timestamp - lastTimestamp);
     lastTimestamp = timestamp;
 
-    if(lives <= 0) {
-        gameOver();
-    }
-
-    if (isRunning) {
-        window.requestAnimationFrame(nextFrame);
-    }
+    if (lives <= 0) gameOver();
+    if (isRunning) window.requestAnimationFrame(nextFrame);
 };
 
 function playGame() {
