@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #d4d4dc;
+    background-color: #1d1e22;
+}
+
+a:link {
+    color: #feda6a;
+}
+
+a:visited {
+    color: aquamarine;
+}
+
+#header {
+    color: #feda6a;
+    font-family: 'Raleway',sans-serif;
+    font-weight: 800;
+    font-size: 200%;
+    text-transform: uppercase;
+    text-align: center;
+    border-style: solid;
+    border-color: #d4d4dc;
+}
+
+@media only screen and (max-width: 600px) {
+
+}
+
+@media only screen and (min-width: 600px) {
+    body {
+        padding: 2rem 3rem 3rem 2rem;
+    }
+    h2:hover {
+        color: #feda6a;
+        display: list-item;
+        list-style: square;
+        list-style-position: inside;
+    }
+
+    #content {
+        padding: 3rem;
+    }
+}
