@@ -4,17 +4,8 @@ body {
     background-color: #1d1e22;
 }
 
-a:link {
-    color: #feda6a;
-}
-
-a:visited {
-    color: aquamarine;
-}
-
 #header {
     color: #feda6a;
-    font-family: 'Raleway',sans-serif;
     font-weight: 800;
     font-size: 200%;
     text-transform: uppercase;
@@ -23,8 +14,27 @@ a:visited {
     border-color: #d4d4dc;
 }
 
-@media only screen and (max-width: 600px) {
+#playgame {
+    background-color: #feda6a;
+    text-align: center;
+    display: inline-block;
+    padding: 15px 32px;
+    margin: 1rem 1rem 1rem 1rem;
+    border: none;
+}
 
+#playgame:hover {
+    cursor: pointer;
+}
+
+#gyrotest {
+    margin: 1rem;
+}
+
+@media only screen and (max-width: 600px) {
+    #content {
+        padding: 1rem;
+    }
 }
 
 @media only screen and (min-width: 600px) {

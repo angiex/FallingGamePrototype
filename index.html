@@ -20,16 +20,20 @@
                 "Mobile Computing & Internet of Things" at the Karlsruhe Institute for Technology
                 in winter 2019/20.
                 <br/>
-                <a href="game.html" id="game-link">Falling Game</a>
+                <a href="game.html">
+                    <center>
+                        <button class="btn" id="playgame">Play Game</button>
+                    </center>
+                </a>
             </p>
             <p>
                 <h2>
                     Rules
                 </h2>
-                The goal is to catch as many falling coins as you can and to avoid the bombs.
-                You start off with 3 lives; each time the basket touches a bomb, you lose a life.
+                The goal is to catch as many falling <font color="ffcc66">coins</font> as you can and to avoid the 
+                <font color="ff4d4d">bombs</font>.
+                You start off with 3 lives; each time the <font color="80dfff">basket</font> touches a bomb, you lose a life.
                 There is no time limit. It's game over when you have no more lives left.
-                <!-- Draw coin, bomb, basket and explain -->
             </p>
             <p>
                 <h2>
@@ -48,9 +52,13 @@
                 To test whether the gyroscope is available on the browser and device you are currently
                 using, tilt your device to see if the script recognises the device orientation.
 
-                <div id="alpha"></div>
-                <div id="beta"></div>
-                <div id="gamma"></div>
+                <div id="gyrotest">
+                    <center>
+                        <div id="alpha">No gyroscope was detected.</div>
+                        <div id="beta"></div>
+                        <div id="gamma"></div>
+                    </center>
+                </div>
             </p>
         </div>
     </body>

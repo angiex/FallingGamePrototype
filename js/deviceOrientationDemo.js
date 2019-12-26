@@ -5,4 +5,4 @@ window.addEventListener("deviceorientation", (event) => {
     document.getElementById("alpha").innerHTML = "Alpha: " + alpha;
     document.getElementById("beta").innerHTML = "Beta: " + beta;
     document.getElementById("gamma").innerHTML = "Gamma: " + gamma;
-}, true);
+}, false);
