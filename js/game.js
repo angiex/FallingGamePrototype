@@ -14,7 +14,7 @@ var score = 0;
 var lives = 3;
 
 const GEN_SPEED = 800; // in ms
-const CANVAS_TO_SPEED_RATIO = 650;
+const CANVAS_TO_SPEED_RATIO = 700;
 const BOMB_PROBABILITY = 0.4;
 const FRAME_RATE = 60;
 const FRAME_DURATION = 1000 / FRAME_RATE;
