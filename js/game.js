@@ -158,7 +158,7 @@ window.addEventListener("deviceorientation", (event) => {
     if (!isRunning) {
         return;
     }
-    let leftRightMov = portraitMode ? event.gamma : Math.sign(event.gamma)*(-1)*event.alpha;
+    let leftRightMov = portraitMode ? event.gamma : Math.sign(event.gamma)*(-1)*event.beta;
     basket.move(leftRightMov);
 }, true);
 
