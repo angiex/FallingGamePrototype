@@ -14,6 +14,7 @@ var score = 0;
 var lives = 3;
 
 const GEN_SPEED = 800; // in ms
+const CANVAS_TO_SPEED_RATIO = 650;
 const BOMB_PROBABILITY = 0.4;
 const FRAME_RATE = 60;
 const FRAME_DURATION = 1000 / FRAME_RATE;
@@ -56,7 +57,7 @@ function drawStartScreen() {
 }
 
 function drawGameOverScreen() {
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = "red";
     ctx.font = (fontSize|0) + "px Helvetica";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
@@ -182,6 +183,10 @@ Coin.prototype.draw = function() {
     ctx.fill();
 };
 
+Coin.prototype.setDescentSpeed = function(descentSpeed) {
+    this.descentSpeed = descentSpeed;
+}
+
 Coin.prototype.fall = function(msElapsed) {
     this.y += this.descentSpeed * msElapsed;
 };
@@ -203,6 +208,10 @@ Bomb.prototype.draw = function() {
     ctx.stroke();
     ctx.fill();
 };
+
+Bomb.prototype.setDescentSpeed = function(descentSpeed) {
+    this.descentSpeed = descentSpeed;
+}
 
 Bomb.prototype.fall = function(msElapsed) {
     this.y += this.descentSpeed * msElapsed;
@@ -245,10 +254,10 @@ var startGenerating = () => {
         let object;
         if (rollForObject < BOMB_PROBABILITY) {
             xPos = bombRadius + Math.random() * (canvas.width - 2 * bombRadius);
-            object = new Bomb(xPos, 0, bombRadius, 1);
+            object = new Bomb(xPos, 0, bombRadius, canvas.height / CANVAS_TO_SPEED_RATIO);
         } else {
             xPos = coinRadius + Math.random() * (canvas.width - 2* coinRadius);
-            object = new Coin(xPos, 0, coinRadius, 1);
+            object = new Coin(xPos, 0, coinRadius, canvas.height / CANVAS_TO_SPEED_RATIO);
         }
         fallers.push(object);
     }, GEN_SPEED);
@@ -284,6 +293,7 @@ function drawObjects(msElapsed) {
 
     fallers.forEach((faller) => {
         faller.draw();
+        faller.setDescentSpeed(canvas.height / CANVAS_TO_SPEED_RATIO);
         faller.fall(msElapsed);
     });
 
