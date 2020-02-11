@@ -13,7 +13,7 @@ var basket = null;
 var score = 0;
 var lives = 3;
 
-const GEN_SPEED = 800; // in ms
+const GEN_SPEED = 600; // in ms
 const CANVAS_TO_SPEED_RATIO = 900;
 const BOMB_PROBABILITY = 0.4;
 const FRAME_RATE = 60;
